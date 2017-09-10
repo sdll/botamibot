@@ -1,0 +1,15 @@
+{
+  "name": "botamibot",
+  "version": "1.0.0",
+  "description": "Alfred of cs.HSE",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Sasha Illarionov <aiillarionov@edu.hse.ru> (https://sdll.github.io)",
+  "license": "ISC",
+  "dependencies": {
+    "telegraf": "^3.10.1"
+  }
+}
