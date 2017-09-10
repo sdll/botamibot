@@ -4,7 +4,8 @@ const { Extra, Markup } = require('telegraf')
 module.exports = class {
     static yearHandler(ctx, curricula, year) {
         const subjects = curricula[year]
-        ctx.replyWithHTML("<i>Course</i> :",
+        ctx.replyWithHTML("Thank you very much! Much easier now.\n" +
+                          "Please push on the course title to see related materials on the topic.",
                           Extra.markup(Markup
                                        .keyboard(Object.keys(subjects))
                                        .oneTime()
@@ -43,8 +44,12 @@ module.exports = class {
         }
         else
         {
-            ctx.reply("Sorry, no subjects are listed for the chosen year of study!")
+            ctx.replyWithHTML("What an abominable state of affairs!\n" +
+                              "I am sorry, but I cannot help you with this query.\n" +
+                              "At least we can say for sure that I am still not resourceful enough.\n\n"+
+                              "Could you please send what you are missing to my " +
+                              "<a href='https://t.me/sashill'>buddy</a> to fix the issue?")
         }
-        return 0
+            return 0
     }
 }

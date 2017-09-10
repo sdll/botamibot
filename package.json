@@ -2,13 +2,17 @@
   "name": "botamibot",
   "version": "1.0.0",
   "description": "Alfred of cs.HSE",
+  "homepage": "https://github.com/sdll/botamibot",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
+  "files": ["index.js", "package.json", "config.js", "data", "libs"],
+  "repository" : { "type" : "git",
+                   "url" : "https://github.com/sdll/botamibot"
+                 },
+  "scripts": {  "test": "echo \"Error: no test specified\" && exit 1",
+                "start": "node index.js"
+             },
   "author": "Sasha Illarionov <aiillarionov@edu.hse.ru> (https://sdll.github.io)",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "telegraf": "^3.10.1"
   }
