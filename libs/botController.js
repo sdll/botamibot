@@ -2,45 +2,68 @@ const telegraf = require('telegraf')
 const { Extra, Markup } = require('telegraf')
 
 module.exports = class {
-    static yearHandler(ctx, curricula, year) {
-        const subjects = curricula[year]
-        ctx.replyWithHTML("Thank you very much! Much easier now.\n" +
-                          "Please push on the course title to see related materials on the topic.",
-                          Extra.markup(Markup
-                                       .keyboard(Object.keys(subjects))
-                                       .oneTime()
-                                       .resize()
-                                      )
-        )
-        return subjects
+    static subjectKeyboard(m, subjectTitles) {
+        var buttons = []
+        for (var i = 0;
+             i < subjectTitles.length;
+             i++) {
+            var subject = subjectTitles[i]
+            buttons.push(m.callbackButton(subject,
+                                          subject))}
+        return m.inlineKeyboard(buttons).resize()
     }
 
-    static subjectHandler(bot, ctx, subjects) {
-        var subject_names = Object.keys(subjects)
 
-        for (var i = 0; i < subject_names.length; i++) {
-            var subject = subjects[subject_names[i]]
-            bot.hears(subject_names[i], (ctx) => {
-                const materials_ids = Object.keys(subject)
-                var materials = "<b>Reading List</b>:\n\n"
-                for (var j = 0; j < materials_ids.length; j++) {
-                    var material_id = materials_ids[j]
-                    var material = subject[material_id]
-                    materials += material_id + "." +
-                        "<i>" + material.authors + "</i>\n" +
-                        "<a " + "href=\"" + material.link + "\">    " +
-                        material.title + "</a>\n\n"
-                }
-                return ctx.replyWithHTML(materials)
+    static subjectHandler(ctx, year, subjectTitle, subject) {
+        const materials_ids = Object.keys(subject)
+        var materials = "<b>Reading List" + " for " +
+            subjectTitle + ", " + year + "</b>:\n\n"
+        for (var j = 0; j < materials_ids.length; j++) {
+            var material_id = materials_ids[j]
+            var material = subject[material_id]
+            materials += material_id + "." +
+                "<i>" + material.authors + "</i>\n" +
+                "<a " + "href=\"" + material.link + "\">    " +
+                material.title + "</a>\n\n"
+        }
+        return ctx.editMessageText(materials, {parse_mode: "html"})
+    }
+
+    static subjectActions(bot, ctx, year, subjects) {
+        const subjectTitles = Object.keys(subjects)
+        for (var i = 0; i < subjectTitles.length; i++) {
+            var subjectTitle = subjectTitles[i]
+            bot.action(subjectTitle, (ctx) => {
+                this.subjectHandler(ctx,
+                                    year,
+                                    subjectTitle,
+                                    subjects[subjectTitle])
             })
         }
     }
+
+    static yearHandler(ctx, curricula, year) {
+        const subjects = curricula[year]
+        const subjectTitles = Object.keys(subjects)
+
+        ctx.replyWithHTML("Thank you very much! Much easier now.\n" +
+                          "Please push on the course title to see related materials on the topic.",
+                          Extra.HTML().markup(
+                              (m) => this.subjectKeyboard(m, subjectTitles)
+                          )
+                         )
+        return subjects
+    }
+
 
     static botHandler(bot, ctx, year) {
         const curricula = require('../data/curricula.json')
         if ( typeof curricula[year] !== 'undefined' && curricula[year] )
         {
-            this.subjectHandler(bot, ctx, this.yearHandler(ctx, curricula, year))
+            this.subjectActions(bot, ctx, year,
+                                this.yearHandler(ctx, curricula, year))
+            // this.subjectHandler(bot, ctx, this.yearHandler(ctx,
+            // curricula, year))
         }
         else
         {
@@ -48,8 +71,8 @@ module.exports = class {
                               "I am sorry, but I cannot help you with this query.\n" +
                               "At least we can say for sure that I am still not resourceful enough.\n\n"+
                               "Could you please send what you are missing to my " +
-                              "<a href='https://t.me/sashill'>buddy</a> to fix the issue?")
+                              "<a href='https://t.me/sashill'>buddy</a> in order to fix the issue?")
         }
-            return 0
+        return 0
     }
 }
