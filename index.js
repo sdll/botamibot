@@ -23,6 +23,7 @@ bot.command('/start', ({ reply }) => {
                          m.callbackButton('Year 2', 'Year 2'),
                          m.callbackButton('Year 3', 'Year 3'),
                          m.callbackButton('Year 4', 'Year 4')])))})
+
 bot.action('Year 1', (ctx) => {
     botController.botHandler(bot, ctx, 'Year 1')
 })
@@ -35,6 +36,15 @@ bot.action('Year 3', (ctx) => {
 bot.action('Year 4', (ctx) => {
     botController.botHandler(bot, ctx, 'Year 4')
 })
+
+bot.command('/1', (ctx) => {
+    botController.botHandler(bot, ctx, 'Year 1')})
+bot.command('/2', (ctx) => {
+    botController.botHandler(bot, ctx, 'Year 2')})
+bot.command('/3', (ctx) => {
+    botController.botHandler(bot, ctx, 'Year 3')})
+bot.command('/4', (ctx) => {
+    botController.botHandler(bot, ctx, 'Year 4')})
 
 bot.command('/help', (ctx) => {
     return ctx.replyWithHTML('Greetings, ' + ctx.from.first_name + '!\n\n' +
