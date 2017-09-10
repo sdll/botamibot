@@ -1,7 +1,7 @@
 const telegraf = require('telegraf')
 const { Extra, Markup } = require('telegraf')
 
-module.exports = class {
+module.exports = class Botamibot{
     static subjectKeyboard(m, subjectTitles) {
         var buttons = []
         for (var i = 0;
@@ -29,20 +29,21 @@ module.exports = class {
         return ctx.editMessageText(materials, {parse_mode: "html"})
     }
 
-    static subjectActions(bot, ctx, year, subjects) {
-        const subjectTitles = Object.keys(subjects)
+    static setupSubjectActions(bot, ctx, year, subjects) {
+        var subjectTitles = Object.keys(subjects)
         for (var i = 0; i < subjectTitles.length; i++) {
-            var subjectTitle = subjectTitles[i]
-            bot.action(subjectTitle, (ctx) => {
-                this.subjectHandler(ctx,
-                                    year,
-                                    subjectTitle,
-                                    subjects[subjectTitle])
-            })
+            (function(i) {var subjectTitle = subjectTitles[i] 
+                          bot.action(subjectTitle, (ctx) => {
+                              Botamibot.subjectHandler(ctx,
+                                                       year,
+                                                       subjectTitle,
+                                                       subjects[subjectTitle])
+                          })
+                         })(i);
         }
     }
 
-    static yearHandler(ctx, curricula, year) {
+    static yearHandler(bot, ctx, curricula, year) {
         const subjects = curricula[year]
         const subjectTitles = Object.keys(subjects)
 
@@ -52,7 +53,8 @@ module.exports = class {
                               (m) => this.subjectKeyboard(m, subjectTitles)
                           )
                          )
-        return subjects
+        Botamibot.setupSubjectActions(bot, ctx, year, subjects)
+        return 0
     }
 
 
@@ -60,10 +62,7 @@ module.exports = class {
         const curricula = require('../data/curricula.json')
         if ( typeof curricula[year] !== 'undefined' && curricula[year] )
         {
-            this.subjectActions(bot, ctx, year,
-                                this.yearHandler(ctx, curricula, year))
-            // this.subjectHandler(bot, ctx, this.yearHandler(ctx,
-            // curricula, year))
+            this.yearHandler(bot, ctx, curricula, year)
         }
         else
         {
