@@ -21,9 +21,9 @@ module.exports = class Botamibot{
         for (var j = 0; j < materials_ids.length; j++) {
             var material_id = materials_ids[j]
             var material = subject[material_id]
-            materials += material_id + "." +
+            materials += material_id + ". " +
                 "<i>" + material.authors + "</i>\n" +
-                "<a " + "href=\"" + material.link + "\">    " +
+                "<a " + "href=\"" + material.link + "\">     " +
                 material.title + "</a>\n\n"
         }
         return ctx.editMessageText(materials, {parse_mode: "html"})
